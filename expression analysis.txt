@@ -1,0 +1,15 @@
+Genes <- GSE1818[,1,drop=FALSE]
+expr<- GSE1818[,-1,drop=FALSE]
+group <- factor(c(2,2,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1))
+design.matrix <- model.matrix(~ 0+group)
+colnames(design.matrix) <- c("TGCT","CTRL")
+library(limma)
+fit <- lmFit(expr, design.matrix)
+cont.matrix <- makeContrasts(TGCTvsCTRL=TGCT-CTRL, 
+                             
+                             levels=design.matrix)
+fit2 <- contrasts.fit(fit, cont.matrix)
+fit2 <- eBayes(fit2)
+write.fit(fit2, adjust="BH", method="separate", file="resultsFC.csv")
+
+
